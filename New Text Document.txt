@@ -1,0 +1,5 @@
+Now create mongoose models of "Student" and "Supervisor" to keep track separately.
+On initial login (First login) of Student, student must have to Select his department, completed credit hours, skills and interests. Student can't navigate to other pages unless these are not set. Also give option in hamburger menu so student can update later also.
+
+Similarly on initial login (First login) of Supervisor, supervisor must have to set his description, Select his department, level (like dean etc), skills and interests. Supervisor can't navigate to other pages unless these are not set. Also give option in hamburger menu so supervisor can update later also.
+

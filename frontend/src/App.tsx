@@ -16,6 +16,7 @@ import { authRoutes, studentRoutes, supervisorRoutes } from "./core/routes";
 import SupervisorPosts from "./pages/SupervisorPosts";
 import AdminNotifications from "./pages/AdminNotifications";
 import { ForgotPasswordPage } from "./pages/auth/forgot-password.page";
+import ProfileSetup from "./pages/ProfileSetup";
 import ProtectedRoute from "@/shared/components/protected-route";
 import { useAuthInit } from "@/shared/hooks/use-auth-init";
 import PageSpinner from "./shared/components/ui/page-spinner";
@@ -54,6 +55,16 @@ const App = () => {
               }
             >
               <Route index element={<Dashboard />} />
+
+              {/* Profile setup - doesn't require profile completion */}
+              <Route
+                path="/profile-setup"
+                element={
+                  <ProtectedRoute requireProfileComplete={false}>
+                    <ProfileSetup />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Student-only routes */}
               <Route

@@ -4,6 +4,26 @@ import supervisorController from "../../../controllers/supervisor.controller.js"
 
 const router = Router();
 
+// Supervisor profile routes
+router.get(
+  "/profile",
+  authCheck,
+  checkRole("supervisor"),
+  supervisorController.getProfile
+);
+router.put(
+  "/profile",
+  authCheck,
+  checkRole("supervisor"),
+  supervisorController.updateProfile
+);
+router.get(
+  "/profile/complete",
+  authCheck,
+  checkRole("supervisor"),
+  supervisorController.checkProfileComplete
+);
+
 // Supervisor posts
 router.post("/posts", authCheck, checkRole("supervisor"), supervisorController.createPost);
 router.get("/posts", authCheck, supervisorController.listPosts);

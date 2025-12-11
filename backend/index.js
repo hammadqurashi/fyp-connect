@@ -12,6 +12,7 @@ import authRouter from "./routes/v1/auth/index.js";
 import userRouter from "./routes/v1/user/index.js";
 import groupRouter from "./routes/v1/group/index.js";
 import supervisorRouter from "./routes/v1/supervisor/index.js";
+import studentRouter from "./routes/v1/student/index.js";
 import notificationRouter from "./routes/v1/notification/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -40,6 +41,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/group", groupRouter);
 app.use("/api/v1/supervisor", supervisorRouter);
+app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/notification", notificationRouter);
 
 app.get("/", (req, res) => {

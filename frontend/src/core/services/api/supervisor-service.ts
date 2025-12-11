@@ -1,24 +1,63 @@
+import { IHttpResponse } from "@/core/types";
 import BaseService from "./base-service";
 
+export interface ISupervisorProfile {
+  userId: string;
+  description?: string;
+  department?: string;
+  level?:
+    | "professor"
+    | "associate_professor"
+    | "assistant_professor"
+    | "dean"
+    | "head_of_department"
+    | "lecturer"
+    | "other";
+  skills: string[];
+  interests: string[];
+  profileCompleted: boolean;
+}
+
+interface SupervisorProfileResponse {
+  supervisor: ISupervisorProfile;
+}
+
+interface ProfileCompleteResponse {
+  profileCompleted: boolean;
+}
+
 class SupervisorService extends BaseService {
-  async listPosts() {
-    return this.httpService.get<any>("/supervisor/posts");
+  async getProfile(): Promise<IHttpResponse<ISupervisorProfile>> {
+    const res = await this.httpService.get<ISupervisorProfile>(
+      "/supervisor/profile"
+    );
+    return res;
   }
 
-  async createPost(payload: { title: string; content: string; tags?: string[]; projectType?: string }) {
-    return this.httpService.post<any>("/supervisor/posts", payload);
+  async updateProfile(data: {
+    description?: string;
+    department?: string;
+    level?: string;
+    skills?: string[];
+    interests?: string[];
+  }): Promise<IHttpResponse<ISupervisorProfile>> {
+    const res = await this.httpService.put<ISupervisorProfile>(
+      "/supervisor/profile",
+      data
+    );
+    return res;
   }
 
-  async requestSupervision(payload: { supervisorId: string }) {
-    return this.httpService.post<any>("/supervisor/requests", payload);
-  }
-
-  async respondRequest(requestId: string, response: "accepted" | "rejected") {
-    return this.httpService.post<any>(`/supervisor/requests/${requestId}/respond`, { response });
+  async checkProfileComplete(): Promise<
+    IHttpResponse<ProfileCompleteResponse>
+  > {
+    const res = await this.httpService.get<ProfileCompleteResponse>(
+      "/supervisor/profile/complete"
+    );
+    return res;
   }
 }
 
 const supervisorService = new SupervisorService();
+
 export default supervisorService;
-
-

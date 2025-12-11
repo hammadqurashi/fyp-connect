@@ -14,6 +14,7 @@ import {
   Search,
   Edit3,
   Shield,
+  UserCircle,
 } from "lucide-react";
 
 import {
@@ -67,6 +68,12 @@ const studentNavigationItems = [
     icon: MessageSquare,
     badge: null,
   },
+  {
+    title: "My Profile",
+    url: "/profile-setup",
+    icon: UserCircle,
+    badge: null,
+  },
 ];
 
 // Supervisor navigation items
@@ -93,6 +100,12 @@ const supervisorNavigationItems = [
     title: "Collaboration",
     url: "/collaboration",
     icon: MessageSquare,
+    badge: null,
+  },
+  {
+    title: "My Profile",
+    url: "/profile-setup",
+    icon: UserCircle,
     badge: null,
   },
 ];

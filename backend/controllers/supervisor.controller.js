@@ -1,24 +1,24 @@
-import supervisorService from "../services/supervisor-service.js";
+import supervisorProfileService from "../services/supervisor/profile.service.js";
 
 const supervisorController = {
   getProfile: async (req, res) => {
     const { id: userId } = req.user;
     const { data, msg, status, success } =
-      await supervisorService.getSupervisorProfile(userId);
+      await supervisorProfileService.getSupervisorProfile(userId);
     return res.status(status).json({ success, msg, data });
   },
 
   updateProfile: async (req, res) => {
     const { id: userId } = req.user;
     const { data, msg, status, success } =
-      await supervisorService.updateSupervisorProfile(userId, req.body);
+      await supervisorProfileService.updateSupervisorProfile(userId, req.body);
     return res.status(status).json({ success, msg, data });
   },
 
   checkProfileComplete: async (req, res) => {
     const { id: userId } = req.user;
     const { data, msg, status, success } =
-      await supervisorService.checkProfileComplete(userId);
+      await supervisorProfileService.checkProfileComplete(userId);
     return res.status(status).json({ success, msg, data });
   },
 

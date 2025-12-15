@@ -60,7 +60,7 @@ const studentNavigationItems = [
     title: "Notifications",
     url: "/notifications",
     icon: Bell,
-    badge: "3",
+    badge: null,
   },
   {
     title: "Collaboration",
@@ -94,7 +94,7 @@ const supervisorNavigationItems = [
     title: "Notifications",
     url: "/notifications",
     icon: Bell,
-    badge: "3",
+    badge: null,
   },
   {
     title: "Collaboration",
@@ -134,7 +134,7 @@ const adminNavigationItems = [
     title: "Notifications",
     url: "/admin/notifications",
     icon: Bell,
-    badge: "3",
+    badge: null,
   },
 ];
 

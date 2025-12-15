@@ -24,6 +24,44 @@ router.get(
   studentController.checkProfileComplete
 );
 
+// Student group routes
+router.post(
+  "/group",
+  authCheck,
+  checkRole("student"),
+  studentController.createGroup
+);
+router.get(
+  "/group",
+  authCheck,
+  checkRole("student"),
+  studentController.getMyGroup
+);
+router.get(
+  "/students/search",
+  authCheck,
+  checkRole("student"),
+  studentController.searchStudents
+);
+router.post(
+  "/invitation/:invitationId/respond",
+  authCheck,
+  checkRole("student"),
+  studentController.respondToInvitation
+);
+router.delete(
+  "/group/:groupId",
+  authCheck,
+  checkRole("student"),
+  studentController.deleteGroup
+);
+router.get(
+  "/invitations/received",
+  authCheck,
+  checkRole("student"),
+  studentController.getReceivedInvitations
+);
+
 export default router;
 
 

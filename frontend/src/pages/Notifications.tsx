@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import notificationService from "@/core/services/api/notification-service";
 import { useToast } from "@/shared/components/ui/use-toast";
 
@@ -44,97 +45,18 @@ interface Notification {
   priority: "low" | "medium" | "high";
   category: string;
   actionUrl?: string;
+  meta?: {
+    type?: string;
+    [key: string]: any;
+  };
 }
 
-// Fallback sample
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    type: "message",
-    title: "New Group Request",
-    message:
-      "Alice Johnson has requested to join your AI Research Group. You can review their profile and accept or decline the request.",
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    unread: true,
-    priority: "high",
-    category: "Group Management",
-    actionUrl: "/group-formation",
-  },
-  {
-    id: "2",
-    type: "deadline",
-    title: "Project Proposal Deadline Approaching",
-    message:
-      "Your project proposal is due in 3 days (January 30, 2024). Make sure to submit all required documents through the portal.",
-    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-    unread: true,
-    priority: "high",
-    category: "Deadlines",
-  },
-  {
-    id: "3",
-    type: "announcement",
-    title: "New Supervisor Available",
-    message:
-      "Dr. Sarah Wilson has joined our platform and is now accepting students for supervision. Her research focuses on Machine Learning and Computer Vision.",
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    unread: false,
-    priority: "medium",
-    category: "Platform Updates",
-    actionUrl: "/supervisors",
-  },
-  {
-    id: "4",
-    type: "system",
-    title: "Profile Update Required",
-    message:
-      "Please update your profile with current skills and interests to improve supervisor matching accuracy.",
-    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-    unread: false,
-    priority: "low",
-    category: "Profile",
-  },
-  {
-    id: "5",
-    type: "message",
-    title: "Supervisor Response Received",
-    message:
-      "Prof. Michael Chen has responded to your supervision request. Check your messages for details about the next steps.",
-    timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 days ago
-    unread: false,
-    priority: "medium",
-    category: "Supervisor Communications",
-    actionUrl: "/collaboration",
-  },
-  {
-    id: "6",
-    type: "deadline",
-    title: "Weekly Progress Report Due",
-    message:
-      "Submit your weekly progress report by Friday. Include project milestones, challenges, and next steps.",
-    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-    unread: false,
-    priority: "medium",
-    category: "Progress Tracking",
-  },
-  {
-    id: "7",
-    type: "announcement",
-    title: "Platform Maintenance Notice",
-    message:
-      "The platform will undergo scheduled maintenance on Sunday, February 4th from 2:00 AM to 4:00 AM. All services will be temporarily unavailable.",
-    timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-    unread: false,
-    priority: "low",
-    category: "Platform Updates",
-  },
-];
-
 export default function Notifications() {
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -150,6 +72,7 @@ export default function Notifications() {
           priority: (n.meta?.priority || "low") as Notification["priority"],
           category: n.meta?.category || "General",
           actionUrl: n.meta?.actionUrl,
+          meta: n.meta || {},
         }));
         setNotifications(items);
       } else if (res.msg) {
@@ -436,11 +359,21 @@ export default function Notifications() {
                         </Button>
                       )}
 
-                      {notification.actionUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={notification.actionUrl}>View</a>
+                      {notification.meta?.type === "group_invitation" && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => navigate("/group-formation")}
+                        >
+                          View Invitations
                         </Button>
                       )}
+                      {notification.actionUrl &&
+                        notification.meta?.type !== "group_invitation" && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={notification.actionUrl}>View</a>
+                          </Button>
+                        )}
                     </div>
                   </div>
                 </div>

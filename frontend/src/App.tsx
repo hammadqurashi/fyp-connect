@@ -1,4 +1,5 @@
-import { Toaster } from "sonner";
+import { Toaster as SonnerToaster } from "sonner";
+import { Toaster } from "@/shared/components/ui/toaster";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -14,6 +15,7 @@ import { LoginPage } from "./pages/auth/login.page";
 import { SignupPage } from "./pages/auth/signup.page";
 import { authRoutes, studentRoutes, supervisorRoutes } from "./core/routes";
 import SupervisorPosts from "./pages/SupervisorPosts";
+import SupervisorInvitations from "./pages/SupervisorInvitations";
 import AdminNotifications from "./pages/AdminNotifications";
 import { ForgotPasswordPage } from "./pages/auth/forgot-password.page";
 import ProfileSetup from "./pages/ProfileSetup";
@@ -34,6 +36,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <SonnerToaster />
         <Toaster />
         <BrowserRouter>
           <Routes>
@@ -98,6 +101,14 @@ const App = () => {
                 element={
                   <ProtectedRoute allowedRoles={["supervisor"]}>
                     <SupervisorPosts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={supervisorRoutes.SUP_INVITATIONS_ROUTE}
+                element={
+                  <ProtectedRoute allowedRoles={["supervisor"]}>
+                    <SupervisorInvitations />
                   </ProtectedRoute>
                 }
               />

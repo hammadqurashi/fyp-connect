@@ -240,6 +240,24 @@ export const GroupStatusView: React.FC = () => {
               </p>
             </div>
           )}
+
+          {/* Supervisor Section */}
+          {group.supervisor && (
+            <div className="pt-4 border-t">
+              <h3 className="text-sm font-medium mb-3">Supervisor</h3>
+              <div className="flex items-center gap-3 p-3 bg-muted rounded">
+                <div className="flex-1">
+                  <p className="font-medium">
+                    {group.supervisor.firstName} {group.supervisor.lastName}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {group.supervisor.email}
+                  </p>
+                </div>
+                <Badge variant="default">Assigned</Badge>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

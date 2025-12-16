@@ -85,6 +85,12 @@ const supervisorNavigationItems = [
     badge: null,
   },
   {
+    title: "Supervision Requests",
+    url: "/supervisor/invitations",
+    icon: Users,
+    badge: null,
+  },
+  {
     title: "My Posts",
     url: "/supervisor/posts",
     icon: Edit3,

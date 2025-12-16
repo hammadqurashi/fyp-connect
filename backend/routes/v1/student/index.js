@@ -62,6 +62,32 @@ router.get(
   studentController.getReceivedInvitations
 );
 
+// Supervisor-related routes
+router.get(
+  "/supervisors",
+  authCheck,
+  checkRole("student"),
+  studentController.getAllSupervisors
+);
+router.get(
+  "/supervisors/:supervisorId",
+  authCheck,
+  checkRole("student"),
+  studentController.getSupervisorProfile
+);
+router.post(
+  "/supervisors/request",
+  authCheck,
+  checkRole("student"),
+  studentController.requestSupervision
+);
+router.post(
+  "/supervisors/cancel-request",
+  authCheck,
+  checkRole("student"),
+  studentController.cancelSupervisionRequest
+);
+
 export default router;
 
 

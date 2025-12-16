@@ -28,12 +28,12 @@ router.get(
 router.post("/posts", authCheck, checkRole("supervisor"), supervisorController.createPost);
 router.get("/posts", authCheck, supervisorController.listPosts);
 
-// Student requests supervision (group -> supervisor)
-router.post(
+// Supervisor gets all supervision requests
+router.get(
   "/requests",
   authCheck,
-  checkRole("student"),
-  supervisorController.requestSupervision
+  checkRole("supervisor"),
+  supervisorController.getSupervisionRequests
 );
 
 // Supervisor responds to requests

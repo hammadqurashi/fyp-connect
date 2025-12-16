@@ -1,5 +1,6 @@
 import studentProfileService from "../services/student/profile.service.js";
 import studentGroupService from "../services/student/group.service.js";
+import studentSupervisorService from "../services/student/supervisor.service.js";
 
 const studentController = {
   // Profile methods
@@ -68,6 +69,37 @@ const studentController = {
     const { id: userId } = req.user;
     const { data, msg, status, success } =
       await studentGroupService.getReceivedInvitations(userId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  // Supervisor-related methods
+  getAllSupervisors: async (req, res) => {
+    const { id: userId } = req.user;
+    const { data, msg, status, success } =
+      await studentSupervisorService.getAllSupervisors(userId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  getSupervisorProfile: async (req, res) => {
+    const { supervisorId } = req.params;
+    const { data, msg, status, success } =
+      await studentSupervisorService.getSupervisorProfile(supervisorId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  requestSupervision: async (req, res) => {
+    const { id: userId } = req.user;
+    const { supervisorId } = req.body;
+    const { data, msg, status, success } =
+      await studentSupervisorService.requestSupervision(userId, supervisorId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  cancelSupervisionRequest: async (req, res) => {
+    const { id: userId } = req.user;
+    const { supervisorId } = req.body;
+    const { data, msg, status, success } =
+      await studentSupervisorService.cancelRequest(userId, supervisorId);
     return res.status(status).json({ success, msg, data });
   },
 };

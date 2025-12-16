@@ -1,4 +1,5 @@
 import supervisorProfileService from "../services/supervisor/profile.service.js";
+import supervisorRequestService from "../services/supervisor/request.service.js";
 
 const supervisorController = {
   getProfile: async (req, res) => {
@@ -33,14 +34,24 @@ const supervisorController = {
     return res.status(501).json({ success: false, msg: "Not implemented yet" });
   },
 
-  requestSupervision: async (req, res) => {
-    // TODO: Implement supervision request
-    return res.status(501).json({ success: false, msg: "Not implemented yet" });
+  getSupervisionRequests: async (req, res) => {
+    const { id: supervisorId } = req.user;
+    const { data, msg, status, success } =
+      await supervisorRequestService.getSupervisionRequests(supervisorId);
+    return res.status(status).json({ success, msg, data });
   },
 
   respondToRequest: async (req, res) => {
-    // TODO: Implement respond to supervision request
-    return res.status(501).json({ success: false, msg: "Not implemented yet" });
+    const { id: supervisorId } = req.user;
+    const { requestId } = req.params;
+    const { response } = req.body; // "accepted" or "rejected"
+    const { data, msg, status, success } =
+      await supervisorRequestService.respondToRequest(
+        supervisorId,
+        requestId,
+        response
+      );
+    return res.status(status).json({ success, msg, data });
   },
 };
 

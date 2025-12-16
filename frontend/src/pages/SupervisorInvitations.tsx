@@ -176,7 +176,7 @@ export default function SupervisorInvitations() {
                           request.group.createdAt || request.createdAt
                         ).toLocaleDateString()}
                       </div>
-                      <div>
+                      {/* <div>
                         <span className="font-medium">Status:</span>{" "}
                         {request.group.isFormed ? (
                           <Badge variant="default" className="ml-1 text-xs">
@@ -187,7 +187,7 @@ export default function SupervisorInvitations() {
                             In Progress
                           </Badge>
                         )}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -345,10 +345,7 @@ export default function SupervisorInvitations() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmResponse}
-              variant={responseType === "rejected" ? "destructive" : "default"}
-            >
+            <AlertDialogAction onClick={confirmResponse}>
               {responseType === "accepted" ? "Accept" : "Reject"}
             </AlertDialogAction>
           </AlertDialogFooter>

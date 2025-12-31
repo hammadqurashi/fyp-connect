@@ -18,6 +18,12 @@ import SupervisorPosts from "./pages/SupervisorPosts";
 import CreateSupervisorPost from "./pages/CreateSupervisorPost";
 import SupervisorInvitations from "./pages/SupervisorInvitations";
 import AdminNotifications from "./pages/AdminNotifications";
+import ManageStudents from "./pages/admin/ManageStudents";
+import ManageSupervisors from "./pages/admin/ManageSupervisors";
+import AddStudent from "./pages/admin/AddStudent";
+import EditStudent from "./pages/admin/EditStudent";
+import AddSupervisor from "./pages/admin/AddSupervisor";
+import EditSupervisor from "./pages/admin/EditSupervisor";
 import { ForgotPasswordPage } from "./pages/auth/forgot-password.page";
 import ProfileSetup from "./pages/ProfileSetup";
 import ProtectedRoute from "@/shared/components/protected-route";
@@ -128,6 +134,54 @@ const App = () => {
                 element={
                   <ProtectedRoute allowedRoles={["admin"]}>
                     <AdminNotifications />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/students"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <ManageStudents />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/students/add"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AddStudent />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/students/edit/:studentId"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <EditStudent />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/supervisors"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <ManageSupervisors />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/supervisors/add"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AddSupervisor />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/supervisors/edit/:supervisorId"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <EditSupervisor />
                   </ProtectedRoute>
                 }
               />

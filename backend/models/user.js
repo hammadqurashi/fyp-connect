@@ -12,6 +12,7 @@ const userSchema = new Schema(
     password: { type: String, required: [true, "Password is required."] },
     role: { type: String, enum: ["student", "supervisor", "admin"] },
     profileImg: { type: String, default: null },
+    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,

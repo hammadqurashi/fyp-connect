@@ -15,6 +15,7 @@ import groupRouter from "./routes/v1/group/index.js";
 import supervisorRouter from "./routes/v1/supervisor/index.js";
 import studentRouter from "./routes/v1/student/index.js";
 import notificationRouter from "./routes/v1/notification/index.js";
+import adminRouter from "./routes/v1/admin/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -45,6 +46,7 @@ app.use("/api/v1/group", groupRouter);
 app.use("/api/v1/supervisor", supervisorRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/notification", notificationRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ success: true, message: "App running" });

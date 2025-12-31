@@ -1,4 +1,5 @@
 import Notification from "../models/notification.js";
+import User from "../models/user.js";
 
 const notificationController = {
   send: async (req, res) => {
@@ -18,9 +19,29 @@ const notificationController = {
           recipientIds.map((rid) => ({ recipient: rid, audience, title, message, meta }))
         );
       } else {
-        // For student/supervisor/both audience, we store without specific recipient
-        // and frontends could fetch by audience; here simplify to broadcast-like entries per audience
-        created = [await Notification.create({ recipient: req.user.id, audience, title, message, meta })];
+        // For student/supervisor/both audience, create notifications for all matching users
+        let userQuery = {};
+        if (audience === "student") {
+          userQuery = { role: "student", isActive: { $ne: false } };
+        } else if (audience === "supervisor") {
+          userQuery = { role: "supervisor", isActive: { $ne: false } };
+        } else if (audience === "both") {
+          userQuery = { role: { $in: ["student", "supervisor"] }, isActive: { $ne: false } };
+        }
+
+        const users = await User.find(userQuery).select("_id").lean();
+        const userIds = users.map((u) => u._id);
+
+        if (userIds.length === 0) {
+          return res.status(400).json({ 
+            success: false, 
+            msg: `No ${audience === "both" ? "users" : audience + "s"} found to send notification to` 
+          });
+        }
+
+        created = await Notification.insertMany(
+          userIds.map((userId) => ({ recipient: userId, audience, title, message, meta }))
+        );
       }
 
       return res.status(201).json({ success: true, msg: "Notification(s) sent", data: { count: created.length } });
@@ -32,6 +53,8 @@ const notificationController = {
   listMine: async (req, res) => {
     try {
       const userId = req.user.id;
+      // Since send() now creates individual notifications for each user,
+      // we just need to fetch notifications where this user is the recipient
       const items = await Notification.find({ recipient: userId }).sort({ createdAt: -1 });
       return res.status(200).json({ success: true, msg: "Notifications", data: { notifications: items } });
     } catch (err) {

@@ -30,9 +30,19 @@ const groupController = {
   getMyGroup: async (req, res) => {
     try {
       const userId = req.user.id;
-      const group = await Group.findOne({ members: userId })
-        .populate("members", "firstName lastName email role profileImg")
-        .populate("supervisor", "firstName lastName email role profileImg");
+      const userRole = req.user.role;
+      
+      // For students, check if they're a member
+      // For supervisors, check if they're assigned as supervisor
+      const query = userRole === "supervisor"
+        ? { supervisor: userId }
+        : { $or: [{ createdBy: userId }, { members: userId }] };
+      
+      const group = await Group.findOne(query)
+        .populate("createdBy", "firstName lastName email profileImg")
+        .populate("members", "firstName lastName email profileImg")
+        .populate("supervisor", "firstName lastName email profileImg")
+        .lean();
 
       if (!group) {
         return res.status(200).json({ success: true, msg: "No group found", data: { group: null } });

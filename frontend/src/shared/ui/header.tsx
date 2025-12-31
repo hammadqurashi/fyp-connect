@@ -1,6 +1,5 @@
-import { Bell, Search, User, LogOut, Settings, HelpCircle } from "lucide-react";
+import { User, LogOut, Settings, HelpCircle } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
 import {
   Avatar,
   AvatarFallback,
@@ -14,14 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { Badge } from "@/shared/components/ui/badge";
 import { SidebarTrigger } from "@/shared/components/ui/sidebar";
-import { BtnLink } from "../components/ui/btn-link";
-import { studentRoutes } from "@/core/routes";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "@/store/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import NotificationsBell from "./notifications-bell";
 
 export function Header() {
   const user = useSelector((state: any) => state.auth.user);
@@ -36,15 +33,6 @@ export function Header() {
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-  };
-
-  const getNotificationsRoute = () => {
-    switch (user?.role) {
-      case "admin":
-        return "/admin/notifications";
-      default:
-        return "/notifications";
-    }
   };
 
   return (
@@ -67,33 +55,23 @@ export function Header() {
 
         {/* Right section */}
         <div className="flex items-center space-x-3">
-          {/* Notifications */}
-          <BtnLink
-            to={getNotificationsRoute()}
-            variant="ghost"
-            size="sm"
-            className="relative"
-          >
-            <Bell className="h-5 w-5" />
-            <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
-            >
-              3
-            </Badge>
-          </BtnLink>
+          <NotificationsBell />
 
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage 
-                    src={user?.profileImg || "/placeholder-avatar.jpg"} 
-                    alt={user?.firstName || "User"} 
+                  <AvatarImage
+                    src={user?.profileImg || "/placeholder-avatar.jpg"}
+                    alt={user?.firstName || "User"}
                   />
                   <AvatarFallback className="bg-primary text-primary-foreground">
-                    {user ? getInitials(user.firstName, user.lastName) : <User className="h-4 w-4" />}
+                    {user ? (
+                      getInitials(user.firstName, user.lastName)
+                    ) : (
+                      <User className="h-4 w-4" />
+                    )}
                   </AvatarFallback>
                 </Avatar>
               </Button>

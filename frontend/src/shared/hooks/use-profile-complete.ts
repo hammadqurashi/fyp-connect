@@ -47,5 +47,3 @@ export const useProfileComplete = () => {
 
   return { isComplete, loading };
 };
-
-

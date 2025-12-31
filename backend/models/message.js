@@ -7,7 +7,8 @@ const messageSchema = new Schema(
     type: { type: String, enum: ["text", "file", "image"], default: "text" },
     content: { type: String, required: true },
     fileName: { type: String, default: null },
-    fileSize: { type: String, default: null },
+    fileSize: { type: Number, default: null },
+    fileUrl: { type: String, default: null },
   },
   { timestamps: true }
 );

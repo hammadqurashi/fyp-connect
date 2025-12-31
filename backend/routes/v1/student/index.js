@@ -95,6 +95,9 @@ router.get("/posts/:postId/comments", authCheck, checkRole("student"), studentCo
 router.post("/posts/:postId/comments", authCheck, checkRole("student"), studentController.addComment);
 router.delete("/posts/comments/:commentId", authCheck, checkRole("student"), studentController.deleteComment);
 
+// Dashboard
+router.get("/dashboard", authCheck, checkRole("student"), studentController.getDashboard);
+
 export default router;
 
 

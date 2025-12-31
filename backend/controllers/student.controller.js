@@ -2,6 +2,7 @@ import studentProfileService from "../services/student/profile.service.js";
 import studentGroupService from "../services/student/group.service.js";
 import studentSupervisorService from "../services/student/supervisor.service.js";
 import studentPostService from "../services/student/post.service.js";
+import studentDashboardService from "../services/student/dashboard.service.js";
 
 const studentController = {
   // Profile methods
@@ -141,6 +142,14 @@ const studentController = {
     const { commentId } = req.params;
     const { data, msg, status, success } =
       await studentPostService.deleteComment(userId, commentId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  // Dashboard
+  getDashboard: async (req, res) => {
+    const { id: userId } = req.user;
+    const { data, msg, status, success } =
+      await studentDashboardService.getDashboardData(userId);
     return res.status(status).json({ success, msg, data });
   },
 };

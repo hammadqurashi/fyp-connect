@@ -92,6 +92,12 @@ class SupervisorService extends BaseService {
     const res = await this.httpService.delete<any>(`/supervisor/posts/${postId}`);
     return res;
   }
+
+  // Dashboard
+  async getDashboard(): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.get<any>("/supervisor/dashboard");
+    return res;
+  }
 }
 
 const supervisorService = new SupervisorService();

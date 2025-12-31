@@ -95,6 +95,12 @@ class StudentService extends BaseService {
     );
     return res;
   }
+
+  // Dashboard
+  async getDashboard(): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.get<any>("/student/dashboard");
+    return res;
+  }
 }
 
 const studentService = new StudentService();

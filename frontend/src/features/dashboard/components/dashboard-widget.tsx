@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -46,10 +47,10 @@ export function DashboardWidget({
               className="w-full group"
               asChild
             >
-              <a href={actionHref} className="flex items-center justify-center">
+              <Link to={actionHref} className="flex items-center justify-center">
                 {actionText}
                 <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </Button>
           )}
         </div>

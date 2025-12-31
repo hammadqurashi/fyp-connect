@@ -1,139 +1,211 @@
-import { GroupStatusWidget } from "@/features/dashboard/components/group-status-widget";
-import { SupervisorMatchWidget } from "@/features/dashboard/components/supervisor-match-widget";
-import { NotificationsWidget } from "@/features/dashboard/components/notifications-widget";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { StatsCard } from "@/features/dashboard/components/stats-card";
+import { StudentGroupStatusWidget } from "@/features/dashboard/components/student-group-status-widget";
+import { SupervisorPostsStatsWidget } from "@/features/dashboard/components/supervisor-posts-stats-widget";
+import { SupervisorRequestsWidget } from "@/features/dashboard/components/supervisor-requests-widget";
+import { StudentDashboardHeader } from "@/features/dashboard/components/student-dashboard-header";
+import { SupervisorDashboardHeader } from "@/features/dashboard/components/supervisor-dashboard-header";
+import { QuickLinksWidget } from "@/features/dashboard/components/quick-links-widget";
 import { SupervisorFeedWidget } from "@/features/dashboard/components/supervisor-feed-widget";
-import { Button } from "@/shared/components/ui/button";
-import { Plus, TrendingUp } from "lucide-react";
+import { NotificationsWidget } from "@/features/dashboard/components/notifications-widget";
+import { SupervisorMatchWidget } from "@/features/dashboard/components/supervisor-match-widget";
+import { TrendingUp, Users, Calendar, Target } from "lucide-react";
+import studentService from "@/core/services/api/student-service";
+import supervisorService from "@/core/services/api/supervisor-service";
+import { useToast } from "@/shared/components/ui/use-toast";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 export default function Dashboard() {
-  return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, John!
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Here's what's happening with your final year project
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm">
-            <TrendingUp className="mr-2 h-4 w-4" />
-            View Analytics
-          </Button>
-          <Button size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Quick Actions
-          </Button>
-        </div>
-      </div>
+  const user = useSelector((state: any) => state.auth.user);
+  const role = user?.role;
+  const { toast } = useToast();
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-4 border border-primary/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-primary/80">Project Progress</p>
-              <p className="text-2xl font-bold text-primary">68%</p>
-            </div>
-            <div className="text-primary/60">
-              <TrendingUp className="h-8 w-8" />
-            </div>
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState<any>(null);
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      if (!role) return;
+
+      setLoading(true);
+      try {
+        let res;
+        if (role === "student") {
+          res = await studentService.getDashboard();
+        } else if (role === "supervisor") {
+          res = await supervisorService.getDashboard();
+        } else {
+          return;
+        }
+
+        if (res.success && res.data) {
+          setDashboardData(res.data);
+        } else {
+          toast({
+            title: "Error",
+            description: res.msg || "Failed to load dashboard",
+            variant: "destructive",
+          });
+        }
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to load dashboard",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, [role, toast]);
+
+  if (!role) {
+    return null;
+  }
+
+  // Student Dashboard
+  if (role === "student") {
+    const group = dashboardData?.group;
+    const groupStats = dashboardData?.groupStats || {
+      memberCount: 0,
+      maxMembers: 4,
+      hasSupervisor: false,
+      isFormed: false,
+    };
+    const topSupervisors = dashboardData?.topSupervisors || [];
+    const recentNotifications = dashboardData?.recentNotifications || [];
+    const recentPosts = dashboardData?.recentPosts || [];
+
+    return (
+      <div className="space-y-6">
+        <StudentDashboardHeader
+          firstName={dashboardData?.user?.firstName || "Student"}
+          lastName={dashboardData?.user?.lastName || ""}
+        />
+
+        {/* Main Widgets Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <StudentGroupStatusWidget
+            group={group}
+            stats={groupStats}
+            loading={loading}
+          />
+          <SupervisorMatchWidget
+            supervisors={topSupervisors}
+            loading={loading}
+          />
+          <NotificationsWidget
+            notifications={recentNotifications}
+            loading={loading}
+          />
+        </div>
+
+        {/* Supervisor Feed Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <SupervisorFeedWidget posts={recentPosts} loading={loading} />
           </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-lg p-4 border border-success/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-success/80">Group Members</p>
-              <p className="text-2xl font-bold text-success">3/4</p>
-            </div>
-            <div className="text-success/60">
-              <TrendingUp className="h-8 w-8" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg p-4 border border-warning/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-warning/80">Days to Deadline</p>
-              <p className="text-2xl font-bold text-warning">45</p>
-            </div>
-            <div className="text-warning/60">
-              <TrendingUp className="h-8 w-8" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-info/10 to-info/5 rounded-lg p-4 border border-info/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-info/80">Supervisor Match</p>
-              <p className="text-2xl font-bold text-info">92%</p>
-            </div>
-            <div className="text-info/60">
-              <TrendingUp className="h-8 w-8" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Widgets Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        <GroupStatusWidget />
-        <SupervisorMatchWidget />
-        <NotificationsWidget />
-      </div>
-
-      {/* Supervisor Feed Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <SupervisorFeedWidget />
-        </div>
-        <div className="space-y-4">
-          {/* Quick Links */}
-          <div className="bg-gradient-to-br from-accent/50 to-background rounded-lg p-4 border">
-            <h3 className="font-semibold mb-3 text-sm">Quick Links</h3>
-            <div className="space-y-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                asChild
-              >
-                <a href="/group-formation">Create New Group</a>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                asChild
-              >
-                <a href="/supervisors">Browse Supervisors</a>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                asChild
-              >
-                <a href="/guidelines">View Guidelines</a>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                asChild
-              >
-                <a href="/collaboration">Open Chat</a>
-              </Button>
-            </div>
+          <div className="space-y-4">
+            <QuickLinksWidget role="student" />
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Supervisor Dashboard
+  if (role === "supervisor") {
+    const stats = dashboardData?.stats || {
+      totalPosts: 0,
+      activePosts: 0,
+      totalLikes: 0,
+      totalComments: 0,
+      totalEngagement: 0,
+      avgEngagementPerPost: 0,
+      pendingRequests: 0,
+      supervisedGroups: 0,
+      unreadNotifications: 0,
+    };
+    const recentNotifications = dashboardData?.recentNotifications || [];
+
+    return (
+      <div className="space-y-6">
+        <SupervisorDashboardHeader
+          firstName={dashboardData?.user?.firstName || "Supervisor"}
+          lastName={dashboardData?.user?.lastName || ""}
+        />
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <StatsCard
+            title="Total Posts"
+            value={stats.totalPosts || 0}
+            icon={<TrendingUp className="h-8 w-8" />}
+            gradient="primary"
+          />
+          <StatsCard
+            title="Total Engagement"
+            value={stats.totalEngagement || 0}
+            icon={<Users className="h-8 w-8" />}
+            gradient="success"
+          />
+          <StatsCard
+            title="Pending Requests"
+            value={stats.pendingRequests || 0}
+            icon={<Calendar className="h-8 w-8" />}
+            gradient="warning"
+          />
+          <StatsCard
+            title="Supervised Groups"
+            value={stats.supervisedGroups || 0}
+            icon={<Target className="h-8 w-8" />}
+            gradient="info"
+          />
+        </div>
+
+        {/* Main Widgets Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <SupervisorPostsStatsWidget stats={stats} loading={loading} />
+          <SupervisorRequestsWidget
+            pendingRequests={stats.pendingRequests || 0}
+            supervisedGroups={stats.supervisedGroups || 0}
+            loading={loading}
+          />
+          <NotificationsWidget
+            notifications={recentNotifications}
+            loading={loading}
+          />
+        </div>
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            {dashboardData?.topPost && (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-4">Top Performing Post</h3>
+                  <div className="space-y-2">
+                    <p className="font-medium">{dashboardData.topPost.title}</p>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span>{dashboardData.topPost.likesCount} likes</span>
+                      <span>{dashboardData.topPost.commentsCount} comments</span>
+                      <span>{dashboardData.topPost.totalEngagement} total</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+          <div className="space-y-4">
+            <QuickLinksWidget role="supervisor" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }

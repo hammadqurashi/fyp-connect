@@ -1,6 +1,7 @@
 import supervisorProfileService from "../services/supervisor/profile.service.js";
 import supervisorRequestService from "../services/supervisor/request.service.js";
 import supervisorPostService from "../services/supervisor/post.service.js";
+import supervisorDashboardService from "../services/supervisor/dashboard.service.js";
 
 const supervisorController = {
   getProfile: async (req, res) => {
@@ -72,6 +73,14 @@ const supervisorController = {
         requestId,
         response
       );
+    return res.status(status).json({ success, msg, data });
+  },
+
+  // Dashboard
+  getDashboard: async (req, res) => {
+    const { id: supervisorId } = req.user;
+    const { data, msg, status, success } =
+      await supervisorDashboardService.getDashboardData(supervisorId);
     return res.status(status).json({ success, msg, data });
   },
 };

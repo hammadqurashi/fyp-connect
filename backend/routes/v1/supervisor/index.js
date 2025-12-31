@@ -46,6 +46,9 @@ router.post(
   supervisorController.respondToRequest
 );
 
+// Dashboard
+router.get("/dashboard", authCheck, checkRole("supervisor"), supervisorController.getDashboard);
+
 export default router;
 
 

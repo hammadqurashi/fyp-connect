@@ -15,6 +15,7 @@ import { LoginPage } from "./pages/auth/login.page";
 import { SignupPage } from "./pages/auth/signup.page";
 import { authRoutes, studentRoutes, supervisorRoutes } from "./core/routes";
 import SupervisorPosts from "./pages/SupervisorPosts";
+import CreateSupervisorPost from "./pages/CreateSupervisorPost";
 import SupervisorInvitations from "./pages/SupervisorInvitations";
 import AdminNotifications from "./pages/AdminNotifications";
 import { ForgotPasswordPage } from "./pages/auth/forgot-password.page";
@@ -101,6 +102,14 @@ const App = () => {
                 element={
                   <ProtectedRoute allowedRoles={["supervisor"]}>
                     <SupervisorPosts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/supervisor/posts/create"
+                element={
+                  <ProtectedRoute allowedRoles={["supervisor"]}>
+                    <CreateSupervisorPost />
                   </ProtectedRoute>
                 }
               />

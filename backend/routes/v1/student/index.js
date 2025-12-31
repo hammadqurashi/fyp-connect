@@ -88,6 +88,13 @@ router.post(
   studentController.cancelSupervisionRequest
 );
 
+// Post-related routes
+router.get("/posts", authCheck, checkRole("student"), studentController.getAllPosts);
+router.post("/posts/:postId/like", authCheck, checkRole("student"), studentController.toggleLike);
+router.get("/posts/:postId/comments", authCheck, checkRole("student"), studentController.getComments);
+router.post("/posts/:postId/comments", authCheck, checkRole("student"), studentController.addComment);
+router.delete("/posts/comments/:commentId", authCheck, checkRole("student"), studentController.deleteComment);
+
 export default router;
 
 

@@ -54,7 +54,7 @@ const studentNavigationItems = [
     title: "Supervisor Feed",
     url: "/supervisor-feed",
     icon: Rss,
-    badge: "New",
+    badge: null,
   },
   {
     title: "Notifications",

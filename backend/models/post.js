@@ -6,6 +6,7 @@ const postSchema = new Schema(
     title: { type: String, required: [true, "Title is required."] },
     content: { type: String, required: [true, "Content is required."] },
     tags: [{ type: String }],
+    requirements: [{ type: String }],
     projectType: { type: String, enum: ["research", "industry", "both"], default: "research" },
     isActive: { type: Boolean, default: true },
   },

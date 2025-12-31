@@ -1,5 +1,6 @@
 import supervisorProfileService from "../services/supervisor/profile.service.js";
 import supervisorRequestService from "../services/supervisor/request.service.js";
+import supervisorPostService from "../services/supervisor/post.service.js";
 
 const supervisorController = {
   getProfile: async (req, res) => {
@@ -23,15 +24,35 @@ const supervisorController = {
     return res.status(status).json({ success, msg, data });
   },
 
-  // Placeholder methods for other supervisor features
+  // Post methods
   createPost: async (req, res) => {
-    // TODO: Implement supervisor post creation
-    return res.status(501).json({ success: false, msg: "Not implemented yet" });
+    const { id: supervisorId } = req.user;
+    const { data, msg, status, success } =
+      await supervisorPostService.createPost(supervisorId, req.body);
+    return res.status(status).json({ success, msg, data });
   },
 
-  listPosts: async (req, res) => {
-    // TODO: Implement supervisor posts listing
-    return res.status(501).json({ success: false, msg: "Not implemented yet" });
+  getMyPosts: async (req, res) => {
+    const { id: supervisorId } = req.user;
+    const { data, msg, status, success } =
+      await supervisorPostService.getMyPosts(supervisorId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  updatePost: async (req, res) => {
+    const { id: supervisorId } = req.user;
+    const { postId } = req.params;
+    const { data, msg, status, success } =
+      await supervisorPostService.updatePost(supervisorId, postId, req.body);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  deletePost: async (req, res) => {
+    const { id: supervisorId } = req.user;
+    const { postId } = req.params;
+    const { data, msg, status, success } =
+      await supervisorPostService.deletePost(supervisorId, postId);
+    return res.status(status).json({ success, msg, data });
   },
 
   getSupervisionRequests: async (req, res) => {

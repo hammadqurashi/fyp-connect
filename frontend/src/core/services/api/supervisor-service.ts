@@ -56,6 +56,42 @@ class SupervisorService extends BaseService {
     );
     return res;
   }
+
+  // Post methods
+  async createPost(data: {
+    title: string;
+    content: string;
+    tags?: string[];
+    requirements?: string[];
+    projectType?: "research" | "industry" | "both";
+  }): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.post<any>("/supervisor/posts", data);
+    return res;
+  }
+
+  async listPosts(): Promise<IHttpResponse<{ posts: any[] }>> {
+    const res = await this.httpService.get<{ posts: any[] }>("/supervisor/posts");
+    return res;
+  }
+
+  async updatePost(
+    postId: string,
+    data: {
+      title?: string;
+      content?: string;
+      tags?: string[];
+      requirements?: string[];
+      projectType?: "research" | "industry" | "both";
+    }
+  ): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.put<any>(`/supervisor/posts/${postId}`, data);
+    return res;
+  }
+
+  async deletePost(postId: string): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.delete<any>(`/supervisor/posts/${postId}`);
+    return res;
+  }
 }
 
 const supervisorService = new SupervisorService();

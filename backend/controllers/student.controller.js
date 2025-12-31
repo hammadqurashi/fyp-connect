@@ -1,6 +1,7 @@
 import studentProfileService from "../services/student/profile.service.js";
 import studentGroupService from "../services/student/group.service.js";
 import studentSupervisorService from "../services/student/supervisor.service.js";
+import studentPostService from "../services/student/post.service.js";
 
 const studentController = {
   // Profile methods
@@ -100,6 +101,46 @@ const studentController = {
     const { supervisorId } = req.body;
     const { data, msg, status, success } =
       await studentSupervisorService.cancelRequest(userId, supervisorId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  // Post methods
+  getAllPosts: async (req, res) => {
+    const { id: userId } = req.user;
+    const { data, msg, status, success } =
+      await studentPostService.getAllPosts(userId, req.query);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  toggleLike: async (req, res) => {
+    const { id: userId } = req.user;
+    const { postId } = req.params;
+    const { data, msg, status, success } =
+      await studentPostService.toggleLike(userId, postId);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  getComments: async (req, res) => {
+    const { postId } = req.params;
+    const { data, msg, status, success } =
+      await studentPostService.getComments(postId, req.query);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  addComment: async (req, res) => {
+    const { id: userId } = req.user;
+    const { postId } = req.params;
+    const { content } = req.body;
+    const { data, msg, status, success } =
+      await studentPostService.addComment(userId, postId, content);
+    return res.status(status).json({ success, msg, data });
+  },
+
+  deleteComment: async (req, res) => {
+    const { id: userId } = req.user;
+    const { commentId } = req.params;
+    const { data, msg, status, success } =
+      await studentPostService.deleteComment(userId, commentId);
     return res.status(status).json({ success, msg, data });
   },
 };

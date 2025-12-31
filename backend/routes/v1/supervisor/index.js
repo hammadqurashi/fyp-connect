@@ -26,7 +26,9 @@ router.get(
 
 // Supervisor posts
 router.post("/posts", authCheck, checkRole("supervisor"), supervisorController.createPost);
-router.get("/posts", authCheck, supervisorController.listPosts);
+router.get("/posts", authCheck, checkRole("supervisor"), supervisorController.getMyPosts);
+router.put("/posts/:postId", authCheck, checkRole("supervisor"), supervisorController.updatePost);
+router.delete("/posts/:postId", authCheck, checkRole("supervisor"), supervisorController.deletePost);
 
 // Supervisor gets all supervision requests
 router.get(

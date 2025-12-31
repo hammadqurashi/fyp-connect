@@ -1,9 +1,9 @@
 import { Button } from "@/shared/components/ui/button";
 import { Link } from "react-router-dom";
-import { Users, Search, FileText, MessageSquare } from "lucide-react";
+import { Users, Search, FileText, MessageSquare, GraduationCap, Bell } from "lucide-react";
 
 interface QuickLinksWidgetProps {
-  role: "student" | "supervisor";
+  role: "student" | "supervisor" | "admin";
 }
 
 export function QuickLinksWidget({ role }: QuickLinksWidgetProps) {
@@ -21,7 +21,18 @@ export function QuickLinksWidget({ role }: QuickLinksWidgetProps) {
     { href: "/collaboration", label: "Open Chat", icon: MessageSquare },
   ];
 
-  const links = role === "student" ? studentLinks : supervisorLinks;
+  const adminLinks = [
+    { href: "/admin/students", label: "Manage Students", icon: Users },
+    { href: "/admin/supervisors", label: "Manage Supervisors", icon: GraduationCap },
+    { href: "/admin/notifications", label: "Send Notifications", icon: Bell },
+  ];
+
+  const links =
+    role === "student"
+      ? studentLinks
+      : role === "supervisor"
+      ? supervisorLinks
+      : adminLinks;
 
   return (
     <div className="bg-gradient-to-br from-accent/50 to-background rounded-lg p-4 border">

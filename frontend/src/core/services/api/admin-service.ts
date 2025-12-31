@@ -2,6 +2,12 @@ import { IHttpResponse } from "@/core/types";
 import BaseService from "./base-service";
 
 class AdminService extends BaseService {
+  // Dashboard
+  async getDashboardData(): Promise<IHttpResponse<any>> {
+    const res = await this.httpService.get<any>("/admin/dashboard");
+    return res;
+  }
+
   // Student management
   async getAllStudents(query?: {
     page?: number;

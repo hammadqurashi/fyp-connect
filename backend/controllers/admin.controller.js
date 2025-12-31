@@ -1,7 +1,15 @@
 import adminStudentService from "../services/admin/student.service.js";
 import adminSupervisorService from "../services/admin/supervisor.service.js";
+import adminDashboardService from "../services/admin/dashboard.service.js";
 
 const adminController = {
+  // Dashboard
+  getDashboardData: async (req, res) => {
+    const { data, msg, status, success } =
+      await adminDashboardService.getDashboardData();
+    return res.status(status).json({ success, msg, data });
+  },
+
   // Student management
   getAllStudents: async (req, res) => {
     const { data, msg, status, success } =

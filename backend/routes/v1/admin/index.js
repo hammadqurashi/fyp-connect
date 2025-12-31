@@ -8,6 +8,9 @@ const router = Router();
 router.use(authCheck);
 router.use(checkRole("admin"));
 
+// Dashboard route
+router.get("/dashboard", adminController.getDashboardData);
+
 // Student management routes
 router.get("/students", adminController.getAllStudents);
 router.get("/students/:studentId", adminController.getStudentById);

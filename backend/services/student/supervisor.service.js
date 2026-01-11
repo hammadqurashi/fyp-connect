@@ -5,82 +5,205 @@ import Group from "../../models/group.js";
 import SupervisionRequest from "../../models/supervision-request.js";
 import User from "../../models/user.js";
 import Notification from "../../models/notification.js";
+import { calculateMatchPercentage } from "../../utils/matching-algo.js";
 
 class StudentSupervisorService extends BaseService {
   // Calculate match percentage between student and supervisor
-  calculateMatchPercentage(student, supervisor) {
-    let matchScore = 0;
-    let totalWeight = 0;
+  // calculateMatchPercentage(student, supervisor) {
+  //   let matchScore = 0;
+  //   let totalWeight = 0;
 
-    // Department match (30% weight)
-    if (student.department && supervisor.department) {
-      totalWeight += 30;
-      if (student.department === supervisor.department) {
-        matchScore += 30;
-      }
-    } else {
-      totalWeight += 30;
-    }
+  //   // Department match (30% weight)
+  //   if (student.department && supervisor.department) {
+  //     totalWeight += 30;
+  //     if (student.department === supervisor.department) {
+  //       matchScore += 30;
+  //     }
+  //   } else {
+  //     totalWeight += 30;
+  //   }
 
-    // Skills match (35% weight)
-    if (
-      student.skills &&
-      student.skills.length > 0 &&
-      supervisor.skills &&
-      supervisor.skills.length > 0
-    ) {
-      totalWeight += 35;
-      const commonSkills = student.skills.filter((skill) =>
-        supervisor.skills.includes(skill)
-      );
-      const skillMatchRatio =
-        commonSkills.length /
-        Math.max(student.skills.length, supervisor.skills.length);
-      matchScore += skillMatchRatio * 35;
-    } else {
-      totalWeight += 35;
-    }
+  //   // Skills match (35% weight)
+  //   if (
+  //     student.skills &&
+  //     student.skills.length > 0 &&
+  //     supervisor.skills &&
+  //     supervisor.skills.length > 0
+  //   ) {
+  //     totalWeight += 35;
+  //     const commonSkills = student.skills.filter((skill) =>
+  //       supervisor.skills.includes(skill)
+  //     );
+  //     const skillMatchRatio =
+  //       commonSkills.length /
+  //       Math.max(student.skills.length, supervisor.skills.length);
+  //     matchScore += skillMatchRatio * 35;
+  //   } else {
+  //     totalWeight += 35;
+  //   }
 
-    // Interests match (35% weight)
-    if (
-      student.interests &&
-      student.interests.length > 0 &&
-      supervisor.interests &&
-      supervisor.interests.length > 0
-    ) {
-      totalWeight += 35;
-      const commonInterests = student.interests.filter((interest) =>
-        supervisor.interests.includes(interest)
-      );
-      const interestMatchRatio =
-        commonInterests.length /
-        Math.max(student.interests.length, supervisor.interests.length);
-      matchScore += interestMatchRatio * 35;
-    } else {
-      totalWeight += 35;
-    }
+  //   // Interests match (35% weight)
+  //   if (
+  //     student.interests &&
+  //     student.interests.length > 0 &&
+  //     supervisor.interests &&
+  //     supervisor.interests.length > 0
+  //   ) {
+  //     totalWeight += 35;
+  //     const commonInterests = student.interests.filter((interest) =>
+  //       supervisor.interests.includes(interest)
+  //     );
+  //     const interestMatchRatio =
+  //       commonInterests.length /
+  //       Math.max(student.interests.length, supervisor.interests.length);
+  //     matchScore += interestMatchRatio * 35;
+  //   } else {
+  //     totalWeight += 35;
+  //   }
 
-    // Calculate percentage
-    if (totalWeight === 0) return 0;
-    return Math.round((matchScore / totalWeight) * 100);
-  }
+  //   // Calculate percentage
+  //   if (totalWeight === 0) return 0;
+  //   return Math.round((matchScore / totalWeight) * 100);
+  // }
 
   // Get all supervisors with match percentage
+  // async getAllSupervisors(userId) {
+  //   try {
+  //     // Get student profile
+  //     const student = await Student.findOne({ userId }).lean();
+  //     if (!student) {
+  //       return this.handleResponse(400, false, "Student profile not found");
+  //     }
+
+  //     // Get all supervisors with their profiles
+  //     const supervisors = await Supervisor.find({
+  //       profileCompleted: true,
+  //     }).lean();
+  //     const supervisorUserIds = supervisors.map((s) => s.userId);
+
+  //     // Get user details
+  //     const users = await User.find({
+  //       _id: { $in: supervisorUserIds },
+  //       role: "supervisor",
+  //     })
+  //       .select("firstName lastName email profileImg")
+  //       .lean();
+
+  //     // Get all groups to check supervisor assignments
+  //     const groups = await Group.find({}).lean();
+  //     const assignedSupervisorIds = new Set();
+  //     groups.forEach((group) => {
+  //       if (group.supervisor) {
+  //         assignedSupervisorIds.add(group.supervisor.toString());
+  //       }
+  //     });
+
+  //     // Get user's group (check both formed and unformed groups)
+  //     const userGroup = await Group.findOne({
+  //       $or: [{ createdBy: userId }, { members: userId }],
+  //     }).lean();
+
+  //     // Get supervision requests for user's group
+  //     let groupRequests = [];
+  //     if (userGroup) {
+  //       groupRequests = await SupervisionRequest.find({
+  //         group: userGroup._id,
+  //       }).lean();
+  //     }
+
+  //     // Combine data and calculate matches
+  //     const result = users
+  //       .map((user) => {
+  //         const supervisor = supervisors.find(
+  //           (s) => s.userId.toString() === user._id.toString()
+  //         );
+
+  //         if (!supervisor) return null;
+
+  //         const matchPercentage = calculateMatchPercentage(student, supervisor);
+
+  //         // Check if supervisor is already assigned to a group
+  //         const isAssigned = assignedSupervisorIds.has(user._id.toString());
+
+  //         // Check request status for this supervisor
+  //         let requestStatus = null;
+  //         if (userGroup) {
+  //           const request = groupRequests.find(
+  //             (r) => r.supervisor.toString() === user._id.toString()
+  //           );
+  //           if (request) {
+  //             requestStatus = request.status;
+  //           }
+  //         }
+
+  //         // Check if supervisor has reached max groups (3)
+  //         const supervisorGroups = groups.filter(
+  //           (g) =>
+  //             g.supervisor && g.supervisor.toString() === user._id.toString()
+  //         );
+  //         const hasReachedMax = supervisorGroups.length >= 3;
+
+  //         return {
+  //           id: user._id.toString(),
+  //           name: `${user.firstName} ${user.lastName}`,
+  //           email: user.email,
+  //           avatar: user.profileImg,
+  //           department: supervisor.department,
+  //           title: this.getTitleFromLevel(supervisor.level),
+  //           description: supervisor.description,
+  //           researchInterests: supervisor.interests || [],
+  //           tools: supervisor.skills || [],
+  //           matchPercentage,
+  //           isAssigned,
+  //           requestStatus,
+  //           hasReachedMax,
+  //           currentGroups: supervisorGroups.length,
+  //           maxGroups: 3,
+  //         };
+  //       })
+  //       .filter((s) => s !== null);
+
+  //     return this.handleResponse(200, true, "Supervisors retrieved", {
+  //       supervisors: result,
+  //     });
+  //   } catch (err) {
+  //     return this.handleError(err);
+  //   }
+  // }
+
   async getAllSupervisors(userId) {
     try {
-      // Get student profile
-      const student = await Student.findOne({ userId }).lean();
-      if (!student) {
-        return this.handleResponse(400, false, "Student profile not found");
+      // 1. Get user's group
+      const userGroup = await Group.findOne({
+        $or: [{ createdBy: userId }, { members: userId }],
+      }).lean();
+
+      let groupStudents = [];
+
+      if (!userGroup) {
+        // 1. If no group then get any student
+        groupStudents = await Student.find({ userId });
+      } else {
+        // 2. Get all students in the group
+        groupStudents = await Student.find({
+          userId: { $in: userGroup.members },
+        }).lean();
       }
 
-      // Get all supervisors with their profiles
+      if (!groupStudents.length) {
+        return this.handleResponse(400, false, "Group students not found");
+      }
+
+      const groupText = userGroup?.description || "";
+
+      // 4. Get supervisors
       const supervisors = await Supervisor.find({
         profileCompleted: true,
       }).lean();
+
       const supervisorUserIds = supervisors.map((s) => s.userId);
 
-      // Get user details
+      // 5. Get supervisor users
       const users = await User.find({
         _id: { $in: supervisorUserIds },
         role: "supervisor",
@@ -88,62 +211,42 @@ class StudentSupervisorService extends BaseService {
         .select("firstName lastName email profileImg")
         .lean();
 
-      // Get all groups to check supervisor assignments
+      // 6. Groups for constraints
       const groups = await Group.find({}).lean();
-      const assignedSupervisorIds = new Set();
-      groups.forEach((group) => {
-        if (group.supervisor) {
-          assignedSupervisorIds.add(group.supervisor.toString());
-        }
-      });
+      const assignedSupervisorIds = new Set(
+        groups.filter((g) => g.supervisor).map((g) => g.supervisor.toString())
+      );
 
-      // Get user's group (check both formed and unformed groups)
-      const userGroup = await Group.findOne({
-        $or: [{ createdBy: userId }, { members: userId }],
+      let groupRequests = [];
+      groupRequests = await SupervisionRequest.find({
+        group: userGroup?._id,
       }).lean();
 
-      // Get supervision requests for user's group
-      let groupRequests = [];
-      if (userGroup) {
-        groupRequests = await SupervisionRequest.find({
-          group: userGroup._id,
-        }).lean();
-      }
-
-      // Combine data and calculate matches
       const result = users
         .map((user) => {
           const supervisor = supervisors.find(
             (s) => s.userId.toString() === user._id.toString()
           );
-
           if (!supervisor) return null;
 
-          const matchPercentage = this.calculateMatchPercentage(
-            student,
-            supervisor
+          const matchPercentage = calculateMatchPercentage(
+            supervisor,
+            groupStudents,
+            groupText
           );
 
-          // Check if supervisor is already assigned to a group
           const isAssigned = assignedSupervisorIds.has(user._id.toString());
 
-          // Check request status for this supervisor
           let requestStatus = null;
-          if (userGroup) {
-            const request = groupRequests.find(
-              (r) => r.supervisor.toString() === user._id.toString()
-            );
-            if (request) {
-              requestStatus = request.status;
-            }
-          }
+          const request = groupRequests.find(
+            (r) => r.supervisor.toString() === user._id.toString()
+          );
+          if (request) requestStatus = request.status;
 
-          // Check if supervisor has reached max groups (3)
           const supervisorGroups = groups.filter(
             (g) =>
               g.supervisor && g.supervisor.toString() === user._id.toString()
           );
-          const hasReachedMax = supervisorGroups.length >= 3;
 
           return {
             id: user._id.toString(),
@@ -158,12 +261,13 @@ class StudentSupervisorService extends BaseService {
             matchPercentage,
             isAssigned,
             requestStatus,
-            hasReachedMax,
+            hasReachedMax: supervisorGroups.length >= 3,
             currentGroups: supervisorGroups.length,
             maxGroups: 3,
           };
         })
-        .filter((s) => s !== null);
+        .filter(Boolean)
+        .sort((a, b) => b.matchPercentage - a.matchPercentage);
 
       return this.handleResponse(200, true, "Supervisors retrieved", {
         supervisors: result,

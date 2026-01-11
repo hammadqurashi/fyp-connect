@@ -132,7 +132,7 @@ const LoginForm = () => {
               </form>
             </Form>
 
-            <div className="mt-6 text-center">
+            {/* <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
                 Don't have an account?{" "}
                 <Link
@@ -142,7 +142,7 @@ const LoginForm = () => {
                   Sign up
                 </Link>
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>

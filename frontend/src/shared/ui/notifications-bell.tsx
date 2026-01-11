@@ -11,7 +11,7 @@ const NotificationsBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (user) {
+    if (user && user.role !== "admin") {
       notificationService.listMine().then((res) => {
         if (!res.success) return;
         if (!Array.isArray(res.data?.notifications)) return;

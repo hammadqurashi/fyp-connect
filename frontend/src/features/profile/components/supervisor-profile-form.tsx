@@ -171,6 +171,8 @@ export const SupervisorProfileForm: React.FC<SupervisorProfileFormProps> = ({
     if (res.success) {
       toast.success("Profile updated successfully!");
 
+      location.href = "/";
+
       return;
     }
     toast.error(res.msg || "Failed to update profile");

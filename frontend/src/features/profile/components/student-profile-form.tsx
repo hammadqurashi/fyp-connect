@@ -167,6 +167,8 @@ export const StudentProfileForm: React.FC<StudentProfileFormProps> = ({
     if (res.success) {
       toast.success("Profile updated successfully!");
 
+      location.href = "/";
+
       // dispatch(
       //   authActions.setUser({
       //     user: {

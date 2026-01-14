@@ -16,7 +16,7 @@ import {
 import { SidebarTrigger } from "@/shared/components/ui/sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "@/store/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import NotificationsBell from "./notifications-bell";
 
@@ -92,13 +92,15 @@ export function Header() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Profile Settings
+                <Link to="/profile-setup" className="flex items-center gap-1">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Profile Settings
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <HelpCircle className="mr-2 h-4 w-4" />
                 Help & Support
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />

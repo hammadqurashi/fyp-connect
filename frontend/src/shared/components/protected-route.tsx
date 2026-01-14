@@ -20,8 +20,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const user = useSelector((state: any) => state.auth.user);
   const isLoggedIn = useSelector((state: any) => state.auth.isLoggedIn);
+
   const location = useLocation();
   const { isComplete, loading } = useProfileComplete();
+
+  console.log("loading", loading);
+  console.log("isComplete", isComplete);
 
   if (!requireAuth) {
     return <>{children}</>;
@@ -56,6 +60,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
 
     if (!isComplete) {
+      console.log("here", isComplete);
       // Redirect to profile setup if profile is not complete
       return <Navigate to="/profile-setup" />;
     }
